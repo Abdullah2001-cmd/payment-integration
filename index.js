@@ -580,7 +580,7 @@ async function sendEmail(to, template, data) {
 
 // Middleware - IMPORTANT: Raw body for webhook signature verification
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://nerdybuddy-web.vercel.app',
     credentials: true
 }));
 
