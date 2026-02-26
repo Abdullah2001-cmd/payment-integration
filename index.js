@@ -393,7 +393,7 @@ const nodemailer = require('nodemailer');
 const app = express();
 
 // Initialize Stripe with your test key
-const stripe = new Stripe('sk_test_51T4fwyEeXHx7jwBMgR5AXst8QHk4AqPi70Aa0K1eFfoQS7wRaDyBWIk4deQrItTfRupVDt2CaKNlDG5AGUfj4OHZ00oMaYxAed');
+const stripe = new Stripe(process.env.STRIPE_KEY);
 
 // Email configuration
 const emailConfig = {
