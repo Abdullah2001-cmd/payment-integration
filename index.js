@@ -534,29 +534,135 @@ const emailTemplates = {
     }),
 
     adminNotification: (data) => ({
-        subject: `💰 New Payment Received - $${(data.amount / 100).toFixed(2)}`,
+        subject: `📬 New Contact Form Submission - ${data.name || 'New Lead'}`,
         html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Payment Received</h2>
-        
-        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Transaction Details</h3>
-          <p><strong>Amount:</strong> $${(data.amount / 100).toFixed(2)}</p>
-          <p><strong>Customer:</strong> ${data.customerName || 'N/A'}</p>
-          <p><strong>Email:</strong> ${data.customerEmail}</p>
-          <p><strong>Plan:</strong> ${data.planName || 'N/A'}</p>
-          <p><strong>Type:</strong> ${data.paymentType || 'One-time'}</p>
-          <p><strong>Transaction ID:</strong> ${data.transactionId}</p>
-          <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-        </div>
-        
-        <a href="http://localhost:5173/admin/payments/${data.transactionId}" 
-           style="background-color: #3b82f6; color: white; padding: 12px 24px; 
-                  text-decoration: none; border-radius: 6px; display: inline-block;">
-          View in Dashboard
-        </a>
+    <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(to bottom, #ffffff, #f9fafb);">
+      <!-- Header with Gradient -->
+      <div style="background: linear-gradient(135deg, #B03982 0%, #733C86 100%); padding: 30px 20px; border-radius: 12px 12px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 600; text-align: center;">
+          ✨ New Contact Form Submission
+        </h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; text-align: center; font-size: 14px;">
+          Someone just reached out through your website
+        </p>
       </div>
-    `
+      
+      <!-- Main Content -->
+      <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        
+        <!-- Contact Details Card -->
+        <div style="background: linear-gradient(135deg, #B03982/5 0%, #733C86/5 100%); padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #f0f0f0;">
+          <h2 style="color: #1f2937; margin: 0 0 16px 0; font-size: 18px; font-weight: 600; border-bottom: 2px solid #B03982; padding-bottom: 8px; display: inline-block;">
+            📋 Contact Information
+          </h2>
+          
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; color: #6b7280; width: 120px;">Full Name:</td>
+              <td style="padding: 8px 0; font-weight: 500; color: #1f2937;">
+                <strong>${data.name || 'Not provided'}</strong>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #6b7280;">Email Address:</td>
+              <td style="padding: 8px 0;">
+                <a href="mailto:${data.email}" style="color: #B03982; text-decoration: none; font-weight: 500;">
+                  ${data.email || 'Not provided'}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #6b7280;">Phone Number:</td>
+              <td style="padding: 8px 0; font-weight: 500; color: #1f2937;">
+                <a href="tel:${data.phone}" style="color: #1f2937; text-decoration: none;">
+                  ${data.phone || 'Not provided'}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #6b7280;">Company:</td>
+              <td style="padding: 8px 0; font-weight: 500; color: #1f2937;">
+                ${data.company || 'Not provided'}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #6b7280;">Submitted:</td>
+              <td style="padding: 8px 0; color: #1f2937;">
+                ${new Date().toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Message Card -->
+        <div style="background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 24px; border-left: 4px solid #B03982;">
+          <h3 style="color: #1f2937; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">
+            💬 Message
+          </h3>
+          <p style="color: #374151; margin: 0; line-height: 1.6; font-size: 15px;">
+            "${data.message || 'No message provided'}"
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 12px; margin: 30px 0 20px; flex-wrap: wrap;">
+          <a href="mailto:${data.email}?subject=Re: Your inquiry&body=Hi ${data.name || 'there'},%0D%0A%0D%0AThanks for reaching out. I'd be happy to discuss..." 
+             style="background: linear-gradient(135deg, #B03982 0%, #733C86 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 50px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(176, 57, 130, 0.3);">
+            📧 Reply via Email
+          </a>
+          
+          <a href="http://localhost:5173/admin/contacts/${data.id || 'new'}" 
+             style="background: white; color: #1f2937; padding: 14px 28px; text-decoration: none; border-radius: 50px; font-weight: 500; border: 2px solid #e5e7eb; display: inline-flex; align-items: center; gap: 8px;">
+            👤 View in Dashboard
+          </a>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          <h4 style="color: #6b7280; margin: 0 0 12px 0; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">
+            Quick Actions
+          </h4>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <a href="tel:${data.phone}" style="color: #4b5563; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;">
+              📞 Call ${data.name?.split(' ')[0] || 'lead'}
+            </a>
+            <span style="color: #d1d5db;">|</span>
+            <a href="#" style="color: #4b5563; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;">
+              📅 Schedule meeting
+            </a>
+            <span style="color: #d1d5db;">|</span>
+            <a href="#" style="color: #4b5563; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 4px;">
+              📝 Add to CRM
+            </a>
+          </div>
+        </div>
+
+        <!-- Lead Score (Optional) -->
+        <div style="margin-top: 20px; background: #f3f4f6; padding: 12px 16px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <span style="color: #4b5563; font-size: 14px;">🔥 Lead Quality Score:</span>
+          <span style="background: #10b981; color: white; padding: 4px 12px; border-radius: 50px; font-size: 13px; font-weight: 500;">
+            ${data.leadScore || 'High'} Priority
+          </span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
+        <p style="margin: 0 0 8px;">
+          This is an automated notification from your website contact form.
+        </p>
+        <p style="margin: 0;">
+          © ${new Date().getFullYear()} Your Company Name. All rights reserved.
+        </p>
+      </div>
+    </div>
+  `
     })
 };
 
@@ -564,11 +670,9 @@ const emailTemplates = {
 async function sendEmail(to, template, data) {
     try {
         const mailOptions = {
-            from: '"Your Company Name" <noreply@yourcompany.com>',
-            to: to,
+            to,
             ...template(data)
         };
-
         const info = await transporter.sendMail(mailOptions);
         console.log(`✅ Email sent to ${to}:`, info.messageId);
         return info;
@@ -580,6 +684,7 @@ async function sendEmail(to, template, data) {
 
 // Middleware - IMPORTANT: Raw body for webhook signature verification
 app.use(cors({
+    // origin: 'http://localhost:5173',
     origin: 'https://nerdybuddy-web.vercel.app',
     credentials: true
 }));
@@ -735,7 +840,7 @@ app.post('/api/create-checkout-session', async (req, res) => {
 // ==================== CREATE PAYMENT INTENT ====================
 app.post('/api/create-payment-intent', async (req, res) => {
     try {
-        const { amount, currency = 'usd', metadata = {} } = req.body;
+        const { email, amount, currency = 'usd', metadata = {} } = req.body;
 
         if (!amount || amount <= 0) {
             return res.status(400).json({
@@ -749,10 +854,14 @@ app.post('/api/create-payment-intent', async (req, res) => {
             amount: amount,
             currency: currency,
             metadata: metadata,
+            receipt_email: email,
             automatic_payment_methods: {
                 enabled: true,
             },
         });
+
+        console.log("Created PI:", paymentIntent.id);
+        console.log("Receipt email:", paymentIntent.receipt_email);
 
         res.json({
             success: true,
@@ -885,8 +994,9 @@ app.post('/api/send-email', async (req, res) => {
 // This endpoint handles Stripe webhook events
 // Update the webhook handler to send comprehensive receipt
 app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    console.log('Running....');
     const sig = req.headers['stripe-signature'];
-    const endpointSecret = 'whsec_your_webhook_signing_secret'; // Replace with your actual webhook secret
+    const endpointSecret = 'whsec_256cd8e7f4afe82954723b9337708c34f986dd00083f45e58487159a6d443b35'; // Replace with your actual webhook secret
 
     let event;
 
@@ -925,10 +1035,13 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
                 }
 
                 // Send comprehensive receipt email to customer
+                console.log('customerEmail', customerEmail);
                 if (customerEmail) {
+
+
                     await sendEmail(
                         customerEmail,
-                        emailTemplates.paymentReceipt,
+                        emailTemplates.paymentSuccess,
                         {
                             customerName: customerName,
                             customerEmail: customerEmail,
