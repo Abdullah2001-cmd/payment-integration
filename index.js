@@ -383,19 +383,14 @@
 //     console.log(`   GET  /api/health`);
 // });
 
-// server.js - Simple Express server with Stripe Checkout, Payment Intents, Webhooks, and Email Notifications
 const express = require('express');
 const cors = require('cors');
 const Stripe = require('stripe');
 const nodemailer = require('nodemailer');
 
-// Initialize Express
 const app = express();
-
-// Initialize Stripe with your test key
+const PORT = 5000;
 const stripe = new Stripe('sk_test_51T4fwyEeXHx7jwBMgR5AXst8QHk4AqPi70Aa0K1eFfoQS7wRaDyBWIk4deQrItTfRupVDt2CaKNlDG5AGUfj4OHZ00oMaYxAed');
-
-// Email configuration
 const emailConfig = {
     host: 'smtp.gmail.com', // or your email provider's SMTP server
     port: 587,
@@ -406,10 +401,7 @@ const emailConfig = {
     }
 };
 
-// Create email transporter
 const transporter = nodemailer.createTransport(emailConfig);
-
-// Verify email connection
 transporter.verify((error, success) => {
     if (error) {
         console.log('❌ Email server connection error:', error);
@@ -417,8 +409,6 @@ transporter.verify((error, success) => {
         console.log('✅ Email server is ready to send messages');
     }
 });
-
-// Email templates
 const emailTemplates = {
     paymentSuccess: (data) => ({
         subject: `✅ Payment Confirmed - ${data.planName || 'Your Purchase'}`,
@@ -665,8 +655,6 @@ const emailTemplates = {
   `
     })
 };
-
-// Helper function to send email
 async function sendEmail(to, template, data) {
     try {
         const mailOptions = {
@@ -681,15 +669,11 @@ async function sendEmail(to, template, data) {
         throw error;
     }
 }
-
-// Middleware - IMPORTANT: Raw body for webhook signature verification
 app.use(cors({
     // origin: 'http://localhost:5173',
     origin: 'https://nerdybuddy-web.vercel.app',
     credentials: true
 }));
-
-// Regular JSON middleware for all routes except webhook
 app.use((req, res, next) => {
     if (req.originalUrl === '/api/webhook') {
         next(); // Skip express.json() for webhook route
@@ -697,8 +681,6 @@ app.use((req, res, next) => {
         express.json()(req, res, next);
     }
 });
-
-// ==================== CREATE CHECKOUT SESSION ====================
 app.post('/api/create-checkout-session', async (req, res) => {
     try {
         const { planId, billingPeriod, userData, serviceHours } = req.body;
@@ -836,8 +818,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
         });
     }
 });
-
-// ==================== CREATE PAYMENT INTENT ====================
 app.post('/api/create-payment-intent', async (req, res) => {
     try {
         const { email, amount, currency = 'usd', metadata = {} } = req.body;
@@ -877,8 +857,6 @@ app.post('/api/create-payment-intent', async (req, res) => {
         });
     }
 });
-
-// ==================== CONFIRM PAYMENT INTENT ====================
 app.post('/api/confirm-payment-intent', async (req, res) => {
     try {
         const { paymentIntentId } = req.body;
@@ -907,8 +885,6 @@ app.post('/api/confirm-payment-intent', async (req, res) => {
         });
     }
 });
-
-// ==================== VERIFY PAYMENT ====================
 app.post('/api/verify-payment', async (req, res) => {
     try {
         const { sessionId, paymentIntentId } = req.body;
@@ -954,8 +930,6 @@ app.post('/api/verify-payment', async (req, res) => {
         });
     }
 });
-
-// ==================== SEND MANUAL EMAIL ====================
 app.post('/api/send-email', async (req, res) => {
     try {
         const { to, templateType, data } = req.body;
@@ -989,10 +963,6 @@ app.post('/api/send-email', async (req, res) => {
         });
     }
 });
-
-// ==================== WEBHOOK ====================
-// This endpoint handles Stripe webhook events
-// Update the webhook handler to send comprehensive receipt
 app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     console.log('Running....');
     const sig = req.headers['stripe-signature'];
@@ -1175,8 +1145,6 @@ app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, 
     // Return a response to acknowledge receipt of the event
     res.json({ received: true });
 });
-
-// ==================== GET PAYMENT INTENT STATUS ====================
 app.get('/api/payment-intent/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -1197,17 +1165,12 @@ app.get('/api/payment-intent/:id', async (req, res) => {
         });
     }
 });
-
-// ==================== HEALTH CHECK ====================
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         message: 'Server is running'
     });
 });
-
-// ==================== START SERVER ====================
-const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`✅ Server running at http://localhost:${PORT}`);
     console.log(`📡 API endpoints:`);
