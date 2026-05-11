@@ -1085,21 +1085,21 @@ const emailTemplates = {
 };
 // choose transporter based on recipient domain
 function getTransporterForRecipient(address) {
-    const domain = address.split('@')[1]?.toLowerCase() || '';
+    // const domain = address.split('@')[1]?.toLowerCase() || '';
     let config = gmailConfig; // default
 
-    if (domain === 'gmail.com' || domain.endsWith('.gmail.com')) {
-        config = gmailConfig;
-    } else if (
-        domain === 'outlook.com' ||
-        domain === 'hotmail.com' ||
-        domain === 'live.com' ||
-        domain === 'office365.com'
-    ) {
-        config = outlookConfig;
-    }
+    // if (domain === 'gmail.com' || domain.endsWith('.gmail.com')) {
+    //     config = gmailConfig;
+    // } else if (
+    //     domain === 'outlook.com' ||
+    //     domain === 'hotmail.com' ||
+    //     domain === 'live.com' ||
+    //     domain === 'office365.com'
+    // ) {
+    //     config = outlookConfig;
+    // }
 
-    return nodemailer.createTransport(config);
+    return nodemailer.createTransport(gmailConfig);
 }
 
 async function sendEmail(to, template, data) {
